@@ -1,4 +1,4 @@
-# $Id: Prima.pm,v 1.3 2007/09/23 08:07:50 dk Exp $
+# $Id: Prima.pm,v 1.7 2010/03/24 21:59:53 dk Exp $
 
 # Prima event loop bridge for POE::Kernel.
 
@@ -6,7 +6,7 @@ package POE::Loop::Prima;
 
 use strict;
 use warnings;
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 # Include common signal handling.
 use POE::Loop::PerlSignals;
@@ -125,9 +125,9 @@ sub loop_resume_time_watcher
 # Maintain filehandle watchers.
 
 my %mask = (
-	MODE_RD => [ fe::Read,       'onRead'      ],
-	MODE_WR => [ fe::Write,      'onWrite'     ],
-	MODE_EX => [ fe::Exception,  'onException' ],
+	MODE_RD , [ fe::Read,       'onRead'      ],
+	MODE_WR , [ fe::Write,      'onWrite'     ],
+	MODE_EX , [ fe::Exception,  'onException' ],
 );
 
 sub _loop_select_callback
@@ -228,13 +228,19 @@ sub loop_run
 
 sub loop_halt {}
 
+sub skip_tests
+{
+	return "Prima tests require the Prima module"
+		if do { eval "use Prima"; $@ };
+}
+
 1;
 
 __END__
 
 =head1 NAME
 
-POE::Loop::Prima - a bridge that supports Prima event loop from POE
+POE::Loop::Prima - bridge between Prima and POE
 
 =head1 SYNOPSIS
 
